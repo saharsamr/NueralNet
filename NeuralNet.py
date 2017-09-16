@@ -46,3 +46,24 @@ class NeuralNet:
         for layerIndex in range(len(self.neurons)):
             for neuronIndex in range(len(self.neurons[layerIndex])):
                 self.neurons[layerIndex][neuronIndex].computeValue()
+
+    def backPropagation(self, sampleIndex):
+        dW = 2*(self.h_x - self.output[sampleIndex])  #TODO: clac h(x)
+        for layerIndex in range(len(self.neurons)-1, 0, -1): #layer index
+            self.calcWeightsDelta(layerIndex, dW)
+
+    def calcWeightsDelta(self, layerIndex, dW):
+        for k in range(len(self.neurons[layerIndex])):
+            for j in range(len(self.neurons[layerIndex-1])):
+                dW *= self.neurons[layerIndex][k].partialDerivative()
+                dW *= self.neurons[layerIndex-1][j].output()
+                if layerIndex != len(self.neurons) - 1:
+                    dW = affectOtherLayersDelta(layerIndex, dW, k)
+                self.neurons[layerIndex][k].setDerivative(j, dW)
+
+    def affectOtherLayersDelta(self, layerIndex, dW, k):
+        derivativeSum = 0
+        for l in range(len(self.neurons[layerIndex+1])):
+            derivativeSum += self.neurons[layerIndex+1][l].getdW(k)*getW(k)
+        dW *= derivativeSum
+        return dW
