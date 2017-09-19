@@ -1,12 +1,14 @@
 import numpy as np
-import Neuron from .Neuron
+from Neuron import Neuron
+from keras.datasets import mnist
+from sympy import Symbol
+import math
 
 class NeuralNet:
     def __init__(self, layesNeuronNum, activationFunc):
         self.activationFunc = activationFunc
         self.neurons = []
-        self.inputs = []
-        self.outputs = []
+        self.loadData()
         self.createNodes(layesNeuronNum)
 
     def createNodes(self,layesNeuronNum):
@@ -14,16 +16,15 @@ class NeuralNet:
         for i in range(len(layesNeuronNum[1:])):
             self.__addLayer(layesNeuronNum[i], layesNeuronNum[i-1])
 
+    def loadData(self):
+        (self.xTrain, self.yTrain), (self.xTest, self.yTest) = mnist.load_data()
+
     def __addLayer(self, neuronsNum, inputsNum):
         self.neurons.append([Neuron(inputsNum) for i in range(neuronsNum)])
 
-    def setTrainSet(self, inputs, outputs):
-        self.inputs = inputs
-        self.outputs = outputs
-
     def __setTrainExample(self, sampleIndex):
         for i in range(len(self.neurons[0])):
-            self.neurons[0][i].setInput(self.inputs[sampleIndex][i])]
+            self.neurons[0][i].setInput(self.xTrain[sampleIndex][i])
 
     def getLayerResult(self, layer):
         outputs = []
@@ -67,3 +68,10 @@ class NeuralNet:
             derivativeSum += self.neurons[layerIndex+1][l].getdW(k)*getW(k)
         dW *= derivativeSum
         return dW
+
+def f(x):
+    return 1 /(1 + math.e**(-x))
+
+if __name__ == "__main__":
+    x = Symbol('x')
+    NN = NeuralNet([28, 5, 6, 10], f(x))
