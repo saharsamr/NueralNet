@@ -11,6 +11,7 @@ class NeuralNet:
         self.loadData()
         self.createNodes(layesNeuronNum)
 
+
     def createNodes(self,layesNeuronNum):
         self.__addLayer(layesNeuronNum[0], 1)  #input layer
         for i in range(len(layesNeuronNum[1:])):
