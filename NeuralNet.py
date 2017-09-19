@@ -18,6 +18,8 @@ class NeuralNet:
 
     def loadData(self):
         (self.xTrain, self.yTrain), (self.xTest, self.yTest) = mnist.load_data()
+        print 'Number of train samples: ', len(self.xTrain)
+        print 'Number of features: ', len(self.xTrain[0])
 
     def __addLayer(self, neuronsNum, inputsNum):
         self.neurons.append([Neuron(inputsNum) for i in range(neuronsNum)])
